@@ -1,13 +1,8 @@
 package com.billing.demo.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -15,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.billing.demo .model.entity.Client;
 import com.billing.demo.service.ClientService;
+import com.billing.demo.service.UploadFileService;
 import com.billing.demo.util.paginator.PageRender;
 
 @Controller
@@ -46,8 +41,9 @@ public class ClientController {
 	@Autowired
 	private ClientService clientService;
 	
-	private final static String UPLOAD_FOLDER = "UPLOAD_FOLDER";
-	
+	@Autowired
+	private UploadFileService uploadFileService;
+		
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)
@@ -77,22 +73,13 @@ public class ClientController {
 		}
 		if(!photo.isEmpty()) {
 			if(client.getId() != null && client.getId() > 0 && client.getPhoto() != null) {
-				Path rootPath = Paths.get("UPLOAD_FOLDER").resolve(client.getPhoto()).toAbsolutePath();
-				File file = rootPath.toFile();
-				
-				if(file.exists() && file.canRead()) {
-					file.delete();
-				}
+				uploadFileService.delete(client.getPhoto());
 			}
 			
-			String uniqueFilename = UUID.randomUUID().toString() + "_" + photo.getOriginalFilename();
-			Path rootPath = Paths.get("UPLOAD_FOLDER").resolve(uniqueFilename);
-			Path rootAbsolutePath = rootPath.toAbsolutePath();
-			log.info("rootPath: " + rootPath);
-			log.info("rootAbsolutePath: " + rootAbsolutePath);
+			String uniqueFilename = null;	
 
 			try {
-				Files.copy(photo.getInputStream(), rootAbsolutePath);
+				uniqueFilename = uploadFileService.copy(photo);
 				flash.addAttribute("info", "Succesfully uploaded '" + uniqueFilename + "'");
 				client.setPhoto(uniqueFilename);
 			} catch (IOException e) {
@@ -132,14 +119,8 @@ public class ClientController {
 			Client client  = clientService.findOne(id);
 			clientService.delete(id);
 			flash.addFlashAttribute("success", "Client successfully eliminated.");
-			
-			Path rootPath = Paths.get("UPLOAD_FOLDER").resolve(client.getPhoto()).toAbsolutePath();
-			File file = rootPath.toFile();
-			
-			if(file.exists() && file.canRead()) {
-				if(file.delete()) {
-					flash.addFlashAttribute("info", "Client's photo successfully eliminated.");
-				}
+			if(uploadFileService.delete(client.getPhoto())) {
+				flash.addFlashAttribute("info", "Client's photo successfully eliminated.");
 			}
 		}
 		return "redirect:/client/list";
@@ -159,14 +140,9 @@ public class ClientController {
 	
 	@GetMapping(value="/UPLOAD_FOLDER/{filename:.+}")
 	public ResponseEntity<Resource> getPhoto(@PathVariable String filename){
-		Path pathPhoto = Paths.get("UPLOAD_FOLDER").resolve(filename).toAbsolutePath();
-		log.info("pathPhoto: " + pathPhoto);
 		Resource resource = null;
 		try {
-			resource = new UrlResource(pathPhoto.toUri());
-			if(!resource.exists() || !resource.isReadable()) {
-				throw new RuntimeException("Error: no se puede cargar imagen");
-			}
+			resource = uploadFileService.load(filename);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
