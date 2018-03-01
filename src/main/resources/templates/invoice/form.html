@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+		<div class="card">
+			<div class="card-header" th:text="${title}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a class="btn btn-light btn-xs" th:href="@{'/view/' + ${invoice.client.id}" th:text="'&loguo;volver'"></a>
+				</h4>
+			
+				<form th:action="@{/invoice/form/}" th:object="${invoice}"
+					method="POST">
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Client</label>
+						<div class="col-sm-6">
+							<input type="text" th:value="${invoice.client.name} + ' ' + ${invoice.client.lastName}" 
+							class="form-control" disabled="disabled"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Description</label>
+						<div class="col-sm-6">
+							<input type="text" th:field="*{description}" class="form-control"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Observation</label>
+						<div class="col-sm-6">
+							<textarea rows="2" cols="2" th:field="*{observation}" class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="from-group row">
+						<label class="col-sm-2 col-form-label">Product</label>
+						<div class="col-sm-6">
+							<input type="text" name="look_product" id="look_product" class="form-control"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-sm-6">
+							<input type="submit" th:value="${titulo}"
+								class="btn btn-secondary"/>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script th:replace="layout/autocomplete :: product"></script>
+</body>
+</html>
