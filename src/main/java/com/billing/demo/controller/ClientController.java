@@ -2,6 +2,7 @@ package com.billing.demo.controller;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.billing.demo .model.entity.Client;
+import com.billing.demo.model.entity.Invoice;
 import com.billing.demo.service.ClientService;
 import com.billing.demo.service.UploadFileService;
 import com.billing.demo.util.paginator.PageRender;
@@ -48,7 +50,7 @@ public class ClientController {
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public String list (@RequestParam(name="page", defaultValue="0") int page, Model model) {
-		Pageable pageRequest = new PageRequest(page, 5);
+		Pageable pageRequest = PageRequest.of(page, 5);
 		Page<Client> clients = clientService.findAllPageable(pageRequest);
 		PageRender<Client> pageRender = new PageRender<>("/client/list", clients); 
 		model.addAttribute("title", "Clients' List");
@@ -119,32 +121,39 @@ public class ClientController {
 			Client client  = clientService.findOne(id);
 			clientService.delete(id);
 			flash.addFlashAttribute("success", "Client successfully eliminated.");
-			if(uploadFileService.delete(client.getPhoto())) {
-				flash.addFlashAttribute("info", "Client's photo successfully eliminated.");
+			if(client.getPhoto() != null) {
+				if(uploadFileService.delete(client.getPhoto())) {
+					flash.addFlashAttribute("info", "Client's photo successfully eliminated.");
+				}
 			}
 		}
 		return "redirect:/client/list";
 	}
 
-	@GetMapping(value="/ver/{id}")
+	@GetMapping(value="/view/{id}")
 	public String view(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
-		Client client = clientService.findOne(id);
+		Client client = clientService.fetchByIdWithInvoices(id); //clientService.findOne(id);
 		if(client == null) {
 			flash.addAttribute("error", "Client doesn't exists in the database");
 			return "redirect:/client/list";
 		}
+		if(client.getPhoto().isEmpty()) {
+			client.setPhoto(new String(""));
+		}
+		if(client.getLstInvoice().isEmpty()) {
+			client.setLstInvoice(new ArrayList<Invoice>());
+		}
 		model.put("client", client);
 		model.put("title", "Client details " + client.getName());
-		return "view";
+		return "client/view";
 	}
 	
-	@GetMapping(value="/UPLOAD_FOLDER/{filename:.+}")
+	@GetMapping(value="/uploads/{filename:.+}")
 	public ResponseEntity<Resource> getPhoto(@PathVariable String filename){
 		Resource resource = null;
 		try {
 			resource = uploadFileService.load(filename);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);

@@ -18,8 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -106,4 +106,10 @@ public class Client implements Serializable{
 	public void addInvoice(Invoice invoice) {
 		lstInvoice.add(invoice);
 	}
+
+	@Override
+	public String toString() {
+		return name + " " + lastName;
+	}
+	
 }

@@ -33,3 +33,16 @@ INSERT INTO Clients(id, name, lastName, email, createdAt) VALUES(32, 'ivan2', 'h
 INSERT INTO Clients(id, name, lastName, email, createdAt) VALUES(33, 'ivan2', 'hdz', 'prueba@mail.com', '2017-01-01');
 INSERT INTO Clients(id, name, lastName, email, createdAt) VALUES(34, 'ivan2', 'hdz', 'prueba@mail.com', '2017-01-01');
 INSERT INTO Clients(id, name, lastName, email, createdAt) VALUES(35, 'ivan2', 'hdz', 'prueba@mail.com', '2017-01-01');**/
+
+
+INSERT INTO Products(id, name, price, createdAt) VALUES(1, 'Macbook', 30000, '2017-01-01');
+INSERT INTO Products(id, name, price, createdAt) VALUES(2, 'Insignia', 3000, '2017-01-01');
+INSERT INTO Products(id, name, price, createdAt) VALUES(3, 'PlayStation', 7000, '2017-01-01');
+INSERT INTO Products(id, name, price, createdAt) VALUES(4, 'Vans', 1000, '2017-01-01');
+INSERT INTO Products(id, name, price, createdAt) VALUES(5, 'Panasonic Pantalla LCD', 259990, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(6, 'Sony Camara digital DSC-W320B', 123490, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(7, 'Apple iPod shuffle', 1499990, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(8, 'Sony Notebook Z110', 37990, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(9, 'Hewlett Packard Multifuncional F2280', 69990, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(10,'Bianchi Bicicleta Aro 26', 69990, NOW());
+INSERT INTO Products(id, name, price, createdAt) VALUES(11,'Mica Comoda 5 Cajones', 299990, NOW());

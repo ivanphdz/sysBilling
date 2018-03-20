@@ -49,4 +49,14 @@ public class Item implements Serializable {
 	public Double calculateCharge() {
 		return quantity.doubleValue() * product.getPrice();
 	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	
+	
 }

@@ -2,11 +2,77 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 	<script type="text/javascript" th:fragment="product">
-	$(document).ready(function(){
+	$(document).ready(function() {
 		$("#look_product").autocomplete({
-			
-		})
+			source : function(request, response){
+				$.ajax({
+					url: "/invoice/load-products/" + request.term,
+					dataType: "json",
+					data: {
+						term: request.term	
+					},
+					success: function(data){
+						response($.map(data, function(item){
+							return {
+								value: item.id,
+								label: item.name,
+								price: item.price
+							}
+						}))
+					}
+				})
+			},
+			select: function(event, ui){
+				if(itemsHelper.hasProduct(ui.item.value)){
+					itemsHelper.incrementQuantity(ui.item.value, ui.item.price);
+					return false;
+				}
+				var line = $("#itemsInvoice").html();
+				line = line.replace(/{ID}/g, ui.item.value);
+				line = line.replace(/{NOMBRE}/g, ui.item.label);
+				line = line.replace(/PRICE/g, ui.item.price);
+				$("#listProducts tbody").append(line);
+				itemsHelper.calculateTotal(ui.item.value, ui.item.price, 1);
+				return false;
+			}
+		});
+		$("form").submit(function(){
+			$("#itemsInvoice").remove();
+			return;
+		});
 	});
+	
+	var itemsHelper = {
+		calculateTotal: function(id, price, quantity) {
+			$("#total_" + id).html(parseInt(precio) * parseInt(quantity));
+			this.calculateCharge();
+		},
+		hasProduct: function(id) {
+			var result = false;
+			$('input[name="item_id[]"]').each(function() {
+				if(parseInt(id) == parseInt($(this).val())){
+					result = true;
+				}
+			});
+			return result;
+		},
+		incrementQuantity: function(id, price){
+			var quantity = $("#quantity_" + id).val() ? parseInt($("#quantity_" + id).val()) : 0;
+			$("#quantity_" + id).val(++quantity);
+			this.calculateTotal(id, price, quantity);
+		},
+		deleteLine: function(id){
+			$("#row_" + id).remove();
+			this.calculateCharge();
+		}, 
+		calculateCharge: function(){
+			var total = 0;
+			$('span[id^="total_"]').each(function(){
+				total += parseInt($(this).html());
+			});
+			$('#charge_total').html(total);
+		}
+	}
 	</script>
 </body>
 </html>
