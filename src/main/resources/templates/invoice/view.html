@@ -8,21 +8,21 @@
 			<div class="card-header" th:text="${title}"></div>
 			<div class="card-body">
 			<h4 class="card-title">
-				<a th:href="@{'/view/' + ${invoice.client.id}}" class="btn btn-light btn-xs">&laquo; volver</a>
+				<a th:href="@{'/client/view/' + ${invoice.client.id}}" class="btn btn-light btn-xs">&laquo; volver</a>
 			</h4>
 			<ul class="list-group my-2">
-				<li class="list-group-item list-group-item-primary" th:text="'Client's data'"></li>
+				<li class="list-group-item list-group-item-primary" th:text="'Clients data'"></li>
 				<li class="list-group-item" th:text="${invoice.client}"></li>
 				<li class="list-group-item" th:text="${invoice.client.email}"></li>
 			</ul>
 			<ul class="list-group">
-				<li class="list-group-item list-group-item-secondary" th:text="'Invoice's data'"></li>
+				<li class="list-group-item list-group-item-secondary" th:text="'Invoices data'"></li>
 				<li class="list-group-item" th:text="'ID: ' + ${invoice.id}"></li>
 				<li class="list-group-item" th:text="'Description: ' + ${invoice.description}"></li>
 				<li class="list-group-item" th:text="'Date: ' + ${invoice.createdAt}"></li>
 			</ul>
-			<div class="alert alert-info my-4" th:if="${#Lists.isEmpty(invoice.items)}" th:text="'there is no lines'"></div>
-			<table th:if="${not #Lists.isEmpty(invoice.items)}" class="table table-striped table-hover table-bordered my-3">
+			<div class="alert alert-info my-4" th:if="${#lists.isEmpty(invoice.lstItem)}" th:text="'there is no lines'"></div>
+			<table th:if="${not #lists.isEmpty(invoice.lstItem)}" class="table table-striped table-hover table-bordered my-3">
 				<thead>
 					<tr>
 						<th>Product</th>
@@ -32,7 +32,7 @@
 					</tr>
 				</thead>	
 				<tbody>
-					<tr th:each="line: ${invoice.items}">
+					<tr th:each="line: ${invoice.lstItem}">
 						<td th:text="${line.product.name}"></td>
 						<td th:text="${line.product.price}"></td>
 						<td th:text="${line.quantity}"></td>
@@ -45,7 +45,7 @@
 				<div class="card-header">Observations</div>
 				<div class="card-body">
 					<p class="card-text" th:text="${invoice.observation}" th:if="${not #strings.isEmpty(invoice.observation)}"></p>
-					<h4 class="card-title" th:if="${#strings.isEmpty(invoice.observation)}" th:text="'it doesn't have observations'"></h4>
+					<h4 class="card-title" th:if="${#strings.isEmpty(invoice.observation)}" th:text="'it doesnt have observations'"></h4>
 				</div>
 			</div>
 			</div>

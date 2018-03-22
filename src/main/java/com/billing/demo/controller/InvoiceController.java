@@ -83,7 +83,7 @@ public class InvoiceController {
 		clientService.saveInvoice(invoice);
 		status.setComplete();
 		flash.addFlashAttribute("success", "Invoice created correctly");
-		return "redirect:/view/" + invoice.getClient().getId();
+		return "redirect:/invoice/view/" + invoice.getClient().getId();
 	} 
 	
 	@GetMapping(value="/view/{id}")
@@ -106,7 +106,7 @@ public class InvoiceController {
 		if(invoice != null) {
 			clientService.deleteInvoice(id);
 			flash.addFlashAttribute("success", "Invoice created succesfully");
-			return "redirect:/view/" + invoice.getClient().getId();
+			return "redirect:/invoice/view/" + invoice.getClient().getId();
 		}
 		flash.addFlashAttribute("error", "Invoice doesn't exist");
 		return "redirect:/client/list";

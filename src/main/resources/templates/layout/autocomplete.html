@@ -29,8 +29,8 @@
 				}
 				var line = $("#itemsInvoice").html();
 				line = line.replace(/{ID}/g, ui.item.value);
-				line = line.replace(/{NOMBRE}/g, ui.item.label);
-				line = line.replace(/PRICE/g, ui.item.price);
+				line = line.replace(/{NAME}/g, ui.item.label);
+				line = line.replace(/{PRICE}/g, ui.item.price);
 				$("#listProducts tbody").append(line);
 				itemsHelper.calculateTotal(ui.item.value, ui.item.price, 1);
 				return false;
@@ -44,7 +44,7 @@
 	
 	var itemsHelper = {
 		calculateTotal: function(id, price, quantity) {
-			$("#total_" + id).html(parseInt(precio) * parseInt(quantity));
+			$("#total_" + id).html(parseInt(price) * parseInt(quantity));
 			this.calculateCharge();
 		},
 		hasProduct: function(id) {

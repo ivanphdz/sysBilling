@@ -33,7 +33,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="invoice: ${client.invoices}">
+						<tr th:each="invoice: ${client.lstInvoice}">
 							<td th:text="${invoice.id}"></td>
 							<td th:text="${invoice.description}"></td>
 							<td th:text="${invoice.createdAt}"></td>
