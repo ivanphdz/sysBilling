@@ -46,3 +46,14 @@ INSERT INTO Products(id, name, price, createdAt) VALUES(8, 'Sony Notebook Z110',
 INSERT INTO Products(id, name, price, createdAt) VALUES(9, 'Hewlett Packard Multifuncional F2280', 69990, NOW());
 INSERT INTO Products(id, name, price, createdAt) VALUES(10,'Bianchi Bicicleta Aro 26', 69990, NOW());
 INSERT INTO Products(id, name, price, createdAt) VALUES(11,'Mica Comoda 5 Cajones', 299990, NOW());
+
+INSERT INTO Users (username, password, enabled) VALUES ('ivan', '$2a$04$w4I98U0TFlxgvPM5GhQqOuTIwK1c165kjrmvrqa5p8QK805n52VMO', 1);
+INSERT INTO Users (username, password, enabled) VALUES ('juan', '$2a$04$w4I98U0TFlxgvPM5GhQqOuTIwK1c165kjrmvrqa5p8QK805n52VMO', true);
+
+INSERT INTO Roles (user_id, authority) VALUES (1, 'ROLE_USER');
+INSERT INTO Roles (user_id, authority) VALUES (1, 'ROLE_ADMIN');
+INSERT INTO Roles (user_id, authority) VALUES (2, 'ROLE_USER');
+
+
+
+

@@ -3,6 +3,7 @@ package com.billing.demo.controller;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -16,6 +17,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +54,7 @@ public class ClientController {
 		
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	@RequestMapping(value="/list", method=RequestMethod.GET)
+	@RequestMapping(value={"/list", "/"}, method=RequestMethod.GET)
 	public String list (@RequestParam(name="page", defaultValue="0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5);
 		Page<Client> clients = clientService.findAllPageable(pageRequest);
@@ -137,6 +143,9 @@ public class ClientController {
 			flash.addAttribute("error", "Client doesn't exists in the database");
 			return "redirect:/client/list";
 		}
+		if(client.getPhoto() == null) {
+			client.setPhoto(new String(""));
+		}
 		if(client.getPhoto().isEmpty()) {
 			client.setPhoto(new String(""));
 		}
@@ -148,6 +157,7 @@ public class ClientController {
 		return "client/view";
 	}
 	
+	@Secured("ROLE_USER")
 	@GetMapping(value="/uploads/{filename:.+}")
 	public ResponseEntity<Resource> getPhoto(@PathVariable String filename){
 		Resource resource = null;
@@ -157,5 +167,23 @@ public class ClientController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+	}
+	
+	private boolean hasRole(String role) {
+		SecurityContext context = SecurityContextHolder.getContext();
+		if(context == null) {
+			return false;
+		}
+		Authentication auth = context.getAuthentication();
+		if(auth == null) {
+			return false;
+		}
+		Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+		for(GrantedAuthority authority : authorities) {
+			if(role.equals(authority.getAuthority())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

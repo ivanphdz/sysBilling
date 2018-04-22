@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head">
 <meta charset="UTF-8" />
 <title th:text="${titulo}">Insert title here</title>
@@ -23,6 +23,23 @@
 					<li class="nav-item"><a class="nav-link"
 						th:href="@{/client/list}">Client</a></li>
 				</ul>
+				<ul class="navbar-nav navbar-right"> 
+				<li sec:authorize="!isAuthenticated()"><a class="btn btn-outline-primary" th:href="@{/login}">Sign In</a></li>
+				<li sec:authorize="isAuthenticated()" class="dropdown show">
+					<div class="dropdown">
+					<a class="btn btn-outline-primary dropdown-toggle" href="#"
+						role="button" id="dropdownMenuLink" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+					<span sec:authentication="name"></span></a>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						<form id="logoutForm" th:action="@{/logout}" method="POST">
+						<button onclick="document.getElementById('logoutForm').submit();" type="submit" class="dropdown-item">Sign Out</button>
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+						</form>
+					</div>
+					</div>
+				</li>
+				</ul>
 			</div>
 		</nav>
 		<div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div>
@@ -35,10 +52,14 @@
 		
 	</div>
 	<footer th:fragment="footer" class="container">
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script th:src="@{/js/jquery-ui.min.js}"></script>
+	<hr/>
+	<p sec:authorize="isAuthenticated()">
+		Logged User: <span sec:authentication="name"></span> | Roles: <span sec:authentication="principal.authorities"></span>
+	</p>
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" th:src="@{/js/jquery-ui.min.js}" defer="defer"></script>
 	</footer>
 </body>
 </html>

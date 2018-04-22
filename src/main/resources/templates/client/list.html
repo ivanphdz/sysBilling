@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="layout/layout :: head"></head>
 <body>
 	<header th:replace="layout/layout :: header"></header>
@@ -10,34 +10,34 @@
 
 
 				<h4 class="card-title">
-					<a th:href="@{/client/create}" class="btn btn-secondary btn-xs">Create
+					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/client/create}" class="btn btn-secondary btn-xs">Create
 						Client</a>
 				</h4>
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th>ID</th>
+							<th sec:authorize="hasRole('ROLE_USER')">ID</th>
 							<th>Name</th>
 							<th>Last Name</th>
 							<th>Email</th>
 							<th>Date</th>
-							<th>Invoices</th>
-							<th>Edit</th>
-							<th>Delete</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Invoices</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Delete</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="client: ${clients}">
-							<td><a class="btn btn-primary btn-xs" th:href="@{/client/view/} + ${client.id}" th:text="${client.id}"></a></td>
+							<td sec:authorize="hasRole('ROLE_USER')"><a class="btn btn-primary btn-xs" th:href="@{/client/view/} + ${client.id}" th:text="${client.id}"></a></td>
 							<td th:text="${client.name}"></td>
 							<td th:text="${client.lastName}"></td>
 							<td th:text="${client.email}"></td>
 							<td th:text="${client.createdAt}"></td>
-							<td><a class="btn btn-success btn-xs" th:href="@{'/invoice/form/' + ${client.id}}" th:text="'create invoice'"></a></td>
-							<td><a class="btn btn-primary btn-xs"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-success btn-xs" th:href="@{'/invoice/form/' + ${client.id}}" th:text="'create invoice'"></a></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-primary btn-xs"
 								th:href="@{/client/__${client.id}__/edit}"
 								 th:text="'edit'"></a></td>
-							<td><a class="btn btn-danger btn-xs"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-danger btn-xs"
 								th:href="@{/client/__${client.id}__/delete}"
 								th:text="'delete'"></a></td>
 						</tr>
