@@ -18,7 +18,7 @@ spec:
         source: demobilling
     spec:
       containers:
-        - image: 'ivanphdz/sysbilling2:latest'
+        - image: 'ivanphdz/sysbilling:latest'
           name: nginx
           ports:
             - containerPort: 8080
@@ -37,4 +37,3 @@ spec:
     app: sysbilling
     source: demobilling
   type: LoadBalancer
-  
