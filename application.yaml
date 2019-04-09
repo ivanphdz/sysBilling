@@ -1,0 +1,39 @@
+apiVersion : v1
+kind: Deployment
+metadata:
+  labels:
+    app: sysbilling
+  name: sysbilling-deployment
+  namespace: ivan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sysbilling
+      source: demobilling
+  template:
+    metadata:
+      labels:
+        app: sysbilling
+        source: demobilling
+    spec:
+      containers:
+        - image: 'ivanphdz/sysbilling2:latest'
+          name: nginx
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sysbilling-demo
+  namespace: ivan
+spec:
+  ports:
+    - port: 8765
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: sysbilling
+    source: demobilling
+  type: LoadBalancer
