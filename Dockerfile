@@ -23,7 +23,3 @@ WORKDIR $APP_HOME
 COPY --from=builder /build/target/*.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"]
 CMD ["-start"]
-#CMD exec java $JAVA_OPTS -jar /app.jar
-#COPY --from=builder /build/target/*jar-with-dependencies.jar /app/app.jar
-#Copy executable jar file from the builder image
-#COPY --from=builder /build/target/*.jar app.jar
