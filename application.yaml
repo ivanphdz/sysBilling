@@ -18,8 +18,8 @@ spec:
         source: demobilling
     spec:
       containers:
-        - image: 'ivanphdz/sysbilling:latest'
-          name: nginx
+        - image: 'index.docker.io/ivanphdz/sysbilling'
+          name: primary
           ports:
             - containerPort: 8080
 ---
